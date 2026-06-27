@@ -1,7 +1,12 @@
-name: Telegram Test
+name: Telegram Reminder
 
 on:
-  workflow_dispatch:
+  workflow_dispatch
+
+  schedule:
+    # Todos los días a las 08:00 UTC
+    # Cambia la hora según necesites
+    - cron: '0 8 * * *'
 
 jobs:
   telegram:
@@ -11,10 +16,10 @@ jobs:
       TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
     steps:
-      - name: Test Telegram
+      - name: Enviar mensaje a Telegram
         run: |
-          curl -v \
+          curl --fail \
             -X POST \
             "https://api.telegram.org/bot${TOKEN}/sendMessage" \
             --data-urlencode "chat_id=8163056130" \
-            --data-urlencode "text=Hola desde GitHub"
+            --data-urlencode "text=🔔 Buenos días Gustavo. Este es un mensaje automático enviado desde GitHub Actions."
