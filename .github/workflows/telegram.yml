@@ -8,7 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test Telegram
+      - name: Mostrar Chat ID
+        run: |
+          echo "CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
+
+      - name: Enviar mensaje
         run: |
           curl -v -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
           -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
