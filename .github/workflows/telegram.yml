@@ -19,6 +19,6 @@ jobs:
 
       - name: Test Telegram
         run: |
-          curl -v -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+          curl -v "https://api.telegram.org/bot${TOKEN}/sendMessage" \
             -d "chat_id=${CHAT_ID}" \
             -d "text=Hola desde GitHub"
