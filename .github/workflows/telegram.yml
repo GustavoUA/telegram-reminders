@@ -1,8 +1,6 @@
 name: Telegram Reminder
 
 on:
-  schedule:
-    - cron: '0 9 * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send Telegram Message
+      - name: Test Telegram
         run: |
-          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+          curl -v -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
           -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d text="✅ Prueba correcta. GitHub Actions funciona."
+          -d text="Hola Gustavo desde GitHub 🚀"
