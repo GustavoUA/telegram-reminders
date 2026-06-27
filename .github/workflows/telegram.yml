@@ -12,17 +12,13 @@ jobs:
       CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     steps:
+      - name: Comprobar secretos
+        run: |
+          echo "CHAT=$CHAT_ID"
+          echo "TOKEN_LENGTH=${#TOKEN}"
+
       - name: Test Telegram
         run: |
-          - name: Comprobar secretos
-  env:
-    CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
-    TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-  run: |
-    echo "CHAT=$CHAT"
-    echo "TOKEN_LENGTH=${#TOKEN}"
-          curl --fail --silent --show-error \
-            -X POST \
-            "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+          curl -v -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
             -d "chat_id=${CHAT_ID}" \
-            -d "text=🚀 GitHub Actions funciona correctamente"
+            -d "text=Hola desde GitHub"
