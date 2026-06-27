@@ -14,6 +14,13 @@ jobs:
     steps:
       - name: Test Telegram
         run: |
+          - name: Comprobar secretos
+  env:
+    CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+    TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+  run: |
+    echo "CHAT=$CHAT"
+    echo "TOKEN_LENGTH=${#TOKEN}"
           curl --fail --silent --show-error \
             -X POST \
             "https://api.telegram.org/bot${TOKEN}/sendMessage" \
