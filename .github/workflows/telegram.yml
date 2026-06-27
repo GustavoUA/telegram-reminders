@@ -1,19 +1,12 @@
-name: Telegram Reminder
+name: Test
 
 on:
   workflow_dispatch:
 
 jobs:
-  telegram:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Mostrar Chat ID
-        run: |
-          echo "CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}"
-
-      - name: Test Telegram
-        run: |
-          curl -v -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
-          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d text="Hola Gustavo desde GitHub"
+      - run: |
+          curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/getMe"
