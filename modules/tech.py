@@ -1,4 +1,4 @@
-```python
+
 import feedparser
 from config import TECH_RSS
 
@@ -72,4 +72,3 @@ def get_tech_news():
 
 No ha sido posible obtener noticias tecnológicas hoy.
 """
-```
