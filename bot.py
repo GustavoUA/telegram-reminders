@@ -21,7 +21,7 @@ from modules.investment import get_investment_tip
 from modules.curiosity import get_curiosity
 from modules.training import get_training
 from modules.motivation import get_motivation
-
+from modules.motogp import get_motogp_news
 
 # ==================================================
 # CONFIGURACIÓN
@@ -125,6 +125,8 @@ def build_message():
     sections = [
 
         get_weather(),
+
+        get_motogp_news(),
 
         get_cyber_news(),
 
