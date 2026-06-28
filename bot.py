@@ -152,7 +152,7 @@ def build_message():
 
 🤖 {HERMES_VERSION}
 
-Powered by Python + GitHub Actions
+© 2026 Gustavo Ucar de Armas
 
 🚀 ¡Que tengas un gran día!
 """
