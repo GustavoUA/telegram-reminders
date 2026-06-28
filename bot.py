@@ -1,3 +1,5 @@
+import random
+import locale
 import requests
 
 from datetime import datetime
@@ -12,46 +14,70 @@ from config import (
 
 from modules.weather import get_weather
 from modules.cybersecurity import get_cyber_news
+from modules.security import get_security_tip
 from modules.ai import get_ai_news
 from modules.tech import get_tech_news
 from modules.investment import get_investment_tip
 from modules.curiosity import get_curiosity
 from modules.training import get_training
 from modules.motivation import get_motivation
-from modules.security import get_security_tips
 
 
-# ==========================================
+# ==================================================
 # CONFIGURACIÓN
-# ==========================================
+# ==================================================
 
 TIMEZONE = ZoneInfo("Atlantic/Canary")
 
+try:
+    locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
+except:
+    pass
 
-# ==========================================
-# SALUDO
-# ==========================================
+
+# ==================================================
+# SALUDOS
+# ==================================================
+
+MORNING = [
+    f"☀️ Buenos días, {USER_NAME}.",
+    f"🌅 ¡Buenos días, {USER_NAME}!",
+    f"☕ Buenos días, {USER_NAME}. Aquí tienes tu briefing diario.",
+    f"🌞 Buenos días, {USER_NAME}. Espero que tengas un gran día."
+]
+
+AFTERNOON = [
+    f"🌤️ Buenas tardes, {USER_NAME}.",
+    f"☀️ Buenas tardes, {USER_NAME}.",
+    f"🌞 Espero que estés teniendo una buena tarde, {USER_NAME}.",
+    f"☕ Buenas tardes. Aquí tienes las novedades del día."
+]
+
+NIGHT = [
+    f"🌙 Buenas noches, {USER_NAME}.",
+    f"⭐ Buenas noches, {USER_NAME}.",
+    f"🌌 Espero que hayas tenido un gran día.",
+    f"🌙 Buenas noches. Aquí tienes el resumen del día."
+]
+
 
 def get_greeting():
 
     hour = datetime.now(TIMEZONE).hour
 
     if 6 <= hour < 12:
-        return "☀️ Buenos días"
+        return random.choice(MORNING)
 
-    elif 12 <= hour < 15:
-        return "🌞 Buen mediodía"
-
-    elif 15 <= hour < 20:
-        return "🌤️ Buenas tardes"
+    elif 12 <= hour < 20:
+        return random.choice(AFTERNOON)
 
     else:
-        return "🌙 Buenas noches"
+        return random.choice(NIGHT)
 
 
-# ==========================================
-# ENVÍO TELEGRAM
-# ==========================================
+# ==================================================
+# TELEGRAM
+# ==================================================
 
 def send_telegram(text):
 
@@ -68,26 +94,32 @@ def send_telegram(text):
     ).raise_for_status()
 
 
-# ==========================================
+# ==================================================
 # MENSAJE
-# ==========================================
+# ==================================================
 
 def build_message():
 
     now = datetime.now(TIMEZONE)
 
-    fecha = now.strftime("%d/%m/%Y")
+    try:
+        fecha = now.strftime("%A, %d de %B de %Y").capitalize()
+    except:
+        fecha = now.strftime("%d/%m/%Y")
+
     hora = now.strftime("%H:%M")
 
     message = f"""
-🤖 {HERMES_VERSION}
+╔══════════════════════════════╗
+            🤖 HERMES
+╚══════════════════════════════╝
 
-{get_greeting()}, {USER_NAME}
+{get_greeting()}
 
 📅 {fecha}
-🕒 {hora}
+🕒 {hora} (Canarias)
 
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
 """
 
     sections = [
@@ -102,7 +134,7 @@ def build_message():
 
         get_tech_news(),
 
-        get_investment_tips(),
+        get_investment_tip(),
 
         get_curiosity(),
 
@@ -112,11 +144,15 @@ def build_message():
 
     ]
 
-    message += "\n━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
+    message += "\n━━━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
 
-    message += """
+    message += f"""
 
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━
+
+🤖 {HERMES_VERSION}
+
+Powered by Python + GitHub Actions
 
 🚀 ¡Que tengas un gran día!
 """
@@ -124,9 +160,9 @@ def build_message():
     return message.strip()
 
 
-# ==========================================
+# ==================================================
 # MAIN
-# ==========================================
+# ==================================================
 
 if __name__ == "__main__":
 
