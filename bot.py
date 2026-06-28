@@ -16,7 +16,7 @@ from modules.investment import get_investment_tip
 from modules.curiosity import get_curiosity
 from modules.motivation import get_motivation
 from modules.training import get_training
-
+from modules.security import get_security_tip
 
 def send_telegram(text):
 
@@ -56,7 +56,8 @@ def build_message():
         get_investment_tip(),
         get_curiosity(),
         get_training(),
-        get_motivation()
+        get_motivation(),
+        get_security_tips()
     ]
 
     message += "\n━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
