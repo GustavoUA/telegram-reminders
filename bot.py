@@ -2,11 +2,11 @@ import os
 import random
 from datetime import datetime
 import requests
+import feedparser
 
 TOKEN = os.environ["TELEGRAM_TOKEN"]
 CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
 
-# Coordenadas
 CIUDADES = {
     "San Cristóbal de La Laguna": (28.4874, -16.3159),
     "Puerto de la Cruz": (28.4134, -16.5487)
@@ -48,15 +48,33 @@ def obtener_tiempo(lat, lon):
         f"?latitude={lat}&longitude={lon}&current=temperature_2m,weather_code"
     )
 
-    r = requests.get(url, timeout=15)
+    r = requests.get(url, timeout=20)
     datos = r.json()["current"]
 
     temp = round(datos["temperature_2m"])
     codigo = datos["weather_code"]
 
-    estado = CODIGOS.get(codigo, "🌍 Sin datos")
+    return f"{temp}°C | {CODIGOS.get(codigo,'🌍 Sin datos')}"
 
-    return f"{temp}°C | {estado}"
+
+def noticia_ciber():
+    try:
+        feed = feedparser.parse("https://feeds.feedburner.com/TheHackersNews")
+
+        if len(feed.entries) == 0:
+            return "No hay noticias disponibles."
+
+        noticia = feed.entries[0]
+
+        return f"""🛡️ Ciberseguridad
+
+📰 {noticia.title}
+
+🔗 {noticia.link}
+"""
+
+    except Exception:
+        return "🛡️ No se pudo obtener la noticia de hoy."
 
 
 mensaje = f"""🤖 Buenos días Gustavo ☀️
@@ -70,11 +88,15 @@ mensaje = f"""🤖 Buenos días Gustavo ☀️
 for ciudad, coord in CIUDADES.items():
     mensaje += f"📍 {ciudad}\n{obtener_tiempo(*coord)}\n\n"
 
-mensaje += f"""💪 Frase del día
+mensaje += noticia_ciber()
+
+mensaje += f"""
+
+💪 Frase del día
 
 "{random.choice(FRASES)}"
 
-¡Que tengas un gran día! 🚀
+🚀 ¡Que tengas un gran día!
 """
 
 requests.post(
@@ -82,5 +104,6 @@ requests.post(
     data={
         "chat_id": CHAT_ID,
         "text": mensaje
-    }
+    },
+    timeout=20
 )
