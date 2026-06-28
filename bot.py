@@ -1,5 +1,7 @@
 import requests
+
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from config import (
     TELEGRAM_TOKEN,
@@ -14,9 +16,42 @@ from modules.ai import get_ai_news
 from modules.tech import get_tech_news
 from modules.investment import get_investment_tip
 from modules.curiosity import get_curiosity
-from modules.motivation import get_motivation
 from modules.training import get_training
+from modules.motivation import get_motivation
 from modules.security import get_security_tips
+
+
+# ==========================================
+# CONFIGURACIÓN
+# ==========================================
+
+TIMEZONE = ZoneInfo("Atlantic/Canary")
+
+
+# ==========================================
+# SALUDO
+# ==========================================
+
+def get_greeting():
+
+    hour = datetime.now(TIMEZONE).hour
+
+    if 6 <= hour < 12:
+        return "☀️ Buenos días"
+
+    elif 12 <= hour < 15:
+        return "🌞 Buen mediodía"
+
+    elif 15 <= hour < 20:
+        return "🌤️ Buenas tardes"
+
+    else:
+        return "🌙 Buenas noches"
+
+
+# ==========================================
+# ENVÍO TELEGRAM
+# ==========================================
 
 def send_telegram(text):
 
@@ -33,31 +68,48 @@ def send_telegram(text):
     ).raise_for_status()
 
 
+# ==========================================
+# MENSAJE
+# ==========================================
+
 def build_message():
 
-    today = datetime.now().strftime("%d/%m/%Y")
+    now = datetime.now(TIMEZONE)
+
+    fecha = now.strftime("%d/%m/%Y")
+    hora = now.strftime("%H:%M")
 
     message = f"""
 🤖 {HERMES_VERSION}
 
-¡Buenos días, {USER_NAME}! ☀️
+{get_greeting()}, {USER_NAME}
 
-📅 {today}
+📅 {fecha}
+🕒 {hora}
 
 ━━━━━━━━━━━━━━━━━━━━
-
 """
 
     sections = [
+
         get_weather(),
+
         get_cyber_news(),
+
+        get_security_tip(),
+
         get_ai_news(),
+
         get_tech_news(),
-        get_investment_tip(),
+
+        get_investment_tips(),
+
         get_curiosity(),
+
         get_training(),
-        get_motivation(),
-        get_security_tips()
+
+        get_motivation()
+
     ]
 
     message += "\n━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
@@ -71,6 +123,10 @@ def build_message():
 
     return message.strip()
 
+
+# ==========================================
+# MAIN
+# ==========================================
 
 if __name__ == "__main__":
 
