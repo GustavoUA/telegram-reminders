@@ -17,7 +17,7 @@ from modules.cybersecurity import get_cyber_news
 from modules.security import get_security_tip
 from modules.ai import get_ai_news
 from modules.tech import get_tech_news
-from modules.investment import get_investment_tip
+from modules.investment import get_investment_tips
 from modules.curiosity import get_curiosity
 from modules.training import get_training
 from modules.motivation import get_motivation
@@ -134,7 +134,7 @@ def build_message():
 
         get_tech_news(),
 
-        get_investment_tip(),
+        get_investment_tips(),
 
         get_curiosity(),
 
