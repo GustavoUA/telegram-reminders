@@ -1,109 +1,88 @@
-import os
-import random
-from datetime import datetime
 import requests
-import feedparser
+from datetime import datetime
 
-TOKEN = os.environ["TELEGRAM_TOKEN"]
-CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
+from config import (
+    TELEGRAM_TOKEN,
+    TELEGRAM_CHAT_ID,
+    USER_NAME,
+    HERMES_VERSION
+)
 
-CIUDADES = {
-    "San Cristóbal de La Laguna": (28.4874, -16.3159),
-    "Puerto de la Cruz": (28.4134, -16.5487)
-}
-
-FRASES = [
-    "Cada pequeño paso te acerca a tu objetivo.",
-    "La disciplina vence a la motivación.",
-    "Hoy es un buen día para mejorar un 1%.",
-    "El éxito es la suma de pequeños esfuerzos diarios.",
-    "No te rindas. Todo esfuerzo tiene recompensa.",
-    "Haz hoy lo que tu yo del futuro agradecerá.",
-    "Nunca es tarde para empezar.",
-    "La constancia siempre supera al talento.",
-    "Cada entrenamiento cuenta.",
-    "Cree en ti. Ya has superado cosas más difíciles."
-]
-
-CODIGOS = {
-    0: "☀️ Despejado",
-    1: "🌤️ Poco nuboso",
-    2: "⛅ Parcialmente nublado",
-    3: "☁️ Nublado",
-    45: "🌫️ Niebla",
-    48: "🌫️ Niebla",
-    51: "🌦️ Llovizna",
-    61: "🌧️ Lluvia",
-    63: "🌧️ Lluvia",
-    65: "🌧️ Lluvia fuerte",
-    71: "❄️ Nieve",
-    80: "🌦️ Chubascos",
-    95: "⛈️ Tormenta"
-}
+from modules.weather import get_weather
+from modules.cybersecurity import get_cyber_news
+from modules.ai import get_ai_news
+from modules.tech import get_tech_news
+from modules.investment import get_investment_tip
+from modules.curiosity import get_curiosity
+from modules.motivation import get_motivation
+from modules.training import get_training
 
 
-def obtener_tiempo(lat, lon):
-    url = (
-        f"https://api.open-meteo.com/v1/forecast"
-        f"?latitude={lat}&longitude={lon}&current=temperature_2m,weather_code"
-    )
+def send_telegram(text):
 
-    r = requests.get(url, timeout=20)
-    datos = r.json()["current"]
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
 
-    temp = round(datos["temperature_2m"])
-    codigo = datos["weather_code"]
-
-    return f"{temp}°C | {CODIGOS.get(codigo,'🌍 Sin datos')}"
-
-
-def noticia_ciber():
-    try:
-        feed = feedparser.parse("https://feeds.feedburner.com/TheHackersNews")
-
-        if len(feed.entries) == 0:
-            return "No hay noticias disponibles."
-
-        noticia = feed.entries[0]
-
-        return f"""🛡️ Ciberseguridad
-
-📰 {noticia.title}
-
-🔗 {noticia.link}
-"""
-
-    except Exception:
-        return "🛡️ No se pudo obtener la noticia de hoy."
+    requests.post(
+        url,
+        data={
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": text,
+            "disable_web_page_preview": True
+        },
+        timeout=30
+    ).raise_for_status()
 
 
-mensaje = f"""🤖 Buenos días Gustavo ☀️
+def build_message():
 
-📅 {datetime.now().strftime("%d/%m/%Y")}
+    today = datetime.now().strftime("%d/%m/%Y")
 
-🌤️ Tiempo
+    message = f"""
+🤖 {HERMES_VERSION}
+
+¡Buenos días, {USER_NAME}! ☀️
+
+📅 {today}
+
+━━━━━━━━━━━━━━━━━━━━
 
 """
 
-for ciudad, coord in CIUDADES.items():
-    mensaje += f"📍 {ciudad}\n{obtener_tiempo(*coord)}\n\n"
+    sections = [
+        get_weather(),
+        get_cyber_news(),
+        get_ai_news(),
+        get_tech_news(),
+        get_investment_tip(),
+        get_curiosity(),
+        get_training(),
+        get_motivation()
+    ]
 
-mensaje += noticia_ciber()
+    message += "\n━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
 
-mensaje += f"""
+    message += """
 
-💪 Frase del día
-
-"{random.choice(FRASES)}"
+━━━━━━━━━━━━━━━━━━━━
 
 🚀 ¡Que tengas un gran día!
 """
 
-requests.post(
-    f"https://api.telegram.org/bot{TOKEN}/sendMessage",
-    data={
-        "chat_id": CHAT_ID,
-        "text": mensaje
-    },
-    timeout=20
-)
+    return message.strip()
+
+
+if __name__ == "__main__":
+
+    try:
+
+        mensaje = build_message()
+
+        send_telegram(mensaje)
+
+        print("✅ Hermes ejecutado correctamente.")
+
+    except Exception as e:
+
+        print("❌ Error:", e)
+
+        raise
