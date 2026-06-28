@@ -16,7 +16,7 @@ from modules.investment import get_investment_tip
 from modules.curiosity import get_curiosity
 from modules.motivation import get_motivation
 from modules.training import get_training
-from modules.security import get_security_tips
+from modules.security import get_security_tip
 
 def send_telegram(text):
 
