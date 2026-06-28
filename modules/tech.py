@@ -1,29 +1,9 @@
-
 import feedparser
+from bs4 import BeautifulSoup
 from config import TECH_RSS
 
 
-def clean_html(text):
-    """Elimina etiquetas HTML sencillas."""
-
-    replacements = [
-        ("<p>", ""),
-        ("</p>", ""),
-        ("<br>", ""),
-        ("<br/>", ""),
-        ("<br />", ""),
-    ]
-
-    for old, new in replacements:
-        text = text.replace(old, new)
-
-    return text
-
-
 def get_tech_news():
-    """
-    Obtiene la noticia tecnológica más reciente.
-    """
 
     for rss in TECH_RSS:
 
@@ -37,12 +17,22 @@ def get_tech_news():
             noticia = feed.entries[0]
 
             titulo = noticia.title
+
             enlace = noticia.link
 
             resumen = ""
 
             if hasattr(noticia, "summary"):
-                resumen = clean_html(noticia.summary)
+
+                resumen = BeautifulSoup(
+                    noticia.summary,
+                    "html.parser"
+                ).get_text(separator=" ", strip=True)
+
+                resumen = resumen.replace("\n", " ")
+
+                resumen = " ".join(resumen.split())
+
                 resumen = resumen[:250]
 
             texto = f"""💻 Tecnología
@@ -51,6 +41,7 @@ def get_tech_news():
 """
 
             if resumen:
+
                 texto += f"""
 
 📌 Resumen
@@ -66,9 +57,10 @@ def get_tech_news():
             return texto
 
         except Exception:
+
             continue
 
     return """💻 Tecnología
 
-No ha sido posible obtener noticias tecnológicas hoy.
+No se pudo obtener la noticia tecnológica.
 """
