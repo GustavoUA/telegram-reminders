@@ -1,4 +1,4 @@
-```python
+
 from datetime import datetime
 
 DIAS = {
@@ -47,4 +47,3 @@ def get_training():
 
 {entreno['descripcion']}
 """
-```
