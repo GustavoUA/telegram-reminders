@@ -121,6 +121,17 @@ MORNING_HOUR = "08:00"
 HISTORY_FOLDER = "history"
 
 # ==========================================
+# MOTOGP
+# ==========================================
+MOTOGP_RSS = [
+
+    "https://www.motogp.com/en/rss/news",
+
+    "https://www.motorsport.com/rss/motogp/news/",
+
+]
+
+# ==========================================
 # DATA
 # ==========================================
 
