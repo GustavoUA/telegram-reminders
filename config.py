@@ -14,6 +14,14 @@ TELEGRAM_CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
 USER_NAME = "Gustavo"
 
 # ==========================================
+# HERMES
+# ==========================================
+
+HERMES_VERSION = "Hermes v1.1"
+
+TIMEZONE = "Atlantic/Canary"
+
+# ==========================================
 # CIUDADES
 # ==========================================
 
@@ -29,20 +37,45 @@ CITIES = {
 }
 
 # ==========================================
-# FUENTES RSS
+# RSS CIBERSEGURIDAD
 # ==========================================
 
 CYBER_RSS = [
+
     "https://www.welivesecurity.com/es/feed/",
-    "https://cybersecuritynews.es/feed/"
+
+    "https://cybersecuritynews.es/feed/",
+
+    "https://unaaldia.hispasec.com/feed/"
+
 ]
+
+# ==========================================
+# RSS IA
+# ==========================================
 
 AI_RSS = [
-    "https://openai.com/news/rss.xml"
+
+    "https://openai.com/news/rss.xml",
+
+    "https://huggingface.co/blog/feed.xml",
+
+    "https://www.anthropic.com/news/rss.xml"
+
 ]
 
+# ==========================================
+# RSS TECNOLOGÍA
+# ==========================================
+
 TECH_RSS = [
-    "https://www.xataka.com/feedburner.xml"
+
+    "https://www.xataka.com/feedburner.xml",
+
+    "https://www.genbeta.com/feedburner.xml",
+
+    "https://www.muylinux.com/feed/"
+
 ]
 
 # ==========================================
@@ -50,46 +83,51 @@ TECH_RSS = [
 # ==========================================
 
 INVESTMENTS = [
+
     "BTC-USD",
-    "GC=F",      # Oro
+
+    "GC=F",          # Oro
+
+    "SI=F",          # Plata
+
     "MSFT",
+
     "NVDA",
+
     "AAPL",
+
     "AMZN",
+
     "GOOGL",
-    "META"
+
+    "META",
+
+    "SPY",           # S&P500 ETF
+
+    "VWCE.DE"        # Vanguard FTSE All World
+
 ]
 
 # ==========================================
-# FRASES MOTIVADORAS
-# ==========================================
-
-QUOTES = [
-    "Cada pequeño paso te acerca a tu objetivo.",
-    "La disciplina vence a la motivación.",
-    "Haz hoy lo que otros no quieren para vivir mañana como otros no pueden.",
-    "Nunca es tarde para empezar.",
-    "La constancia supera al talento cuando el talento no trabaja.",
-    "No cuentes los días. Haz que los días cuenten.",
-    "No esperes el momento perfecto. Haz perfecto el momento.",
-    "El éxito es la suma de pequeños esfuerzos repetidos cada día.",
-    "No importa lo lento que avances mientras no te detengas.",
-    "El futuro depende de lo que hagas hoy.",
-    "Cada entrenamiento cuenta.",
-    "Tu único rival eres tú mismo.",
-    "Si fuera fácil, todo el mundo lo haría.",
-    "Hazlo con miedo, pero hazlo.",
-    "Nunca subestimes el poder de la constancia."
-]
-
-# ==========================================
-# HORARIO HERMES
+# HORARIO
 # ==========================================
 
 MORNING_HOUR = "08:00"
 
 # ==========================================
-# VERSION
+# HISTORIAL
 # ==========================================
 
-HERMES_VERSION = "Hermes Lite v1.0"
+HISTORY_FOLDER = "history"
+
+# ==========================================
+# DATA
+# ==========================================
+
+QUOTES_FILE = "data/quotes.txt"
+
+CURIOSITIES_FILE = "data/curiosities.txt"
+
+SECURITY_FILE = "data/security_tips.txt"
+
+INVESTMENT_FILE = "data/investment.json"
