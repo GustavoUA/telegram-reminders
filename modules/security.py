@@ -4,7 +4,7 @@ from pathlib import Path
 DATA_FILE = Path("data/security_tips.txt")
 
 
-def get_security_tip():
+def get_security_tips():
 
     try:
 
