@@ -1,4 +1,4 @@
-```python
+
 import random
 from pathlib import Path
 
@@ -36,4 +36,3 @@ def get_motivation():
             "💪 Frase del día\n\n"
             "No se pudo cargar la frase de hoy."
         )
-```
