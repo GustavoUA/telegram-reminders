@@ -1,0 +1,15 @@
+Activa siempre la autenticación en dos pasos (2FA) siempre que sea posible.
+Nunca reutilices la misma contraseña en distintos servicios.
+Utiliza un gestor de contraseñas para generar claves únicas y seguras.
+Mantén siempre Windows y tus aplicaciones actualizadas.
+No abras enlaces de correos electrónicos que no esperabas recibir.
+Desconfía de cualquier mensaje que genere urgencia o miedo.
+Haz una copia de seguridad periódica de tus datos importantes.
+Comprueba siempre la dirección web antes de introducir credenciales.
+Nunca descargues software desde páginas no oficiales.
+Mantén activado Microsoft Defender o un antivirus actualizado.
+Bloquea tu ordenador cuando te ausentes del puesto de trabajo.
+No conectes memorias USB de origen desconocido.
+Revisa periódicamente los dispositivos conectados a tus cuentas.
+No compartas códigos de autenticación con nadie.
+Configura alertas de inicio de sesión en tus cuentas importantes.
