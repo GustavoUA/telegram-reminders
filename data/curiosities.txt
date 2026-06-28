@@ -1,0 +1,81 @@
+El primer disco duro de IBM, lanzado en 1956, pesaba más de una tonelada y almacenaba solo 5 MB.
+
+El primer dominio registrado en Internet fue symbolics.com el 15 de marzo de 1985.
+
+Linux fue creado por Linus Torvalds en 1991 como un proyecto personal.
+
+El primer virus para PC se llamó Brain y apareció en 1986.
+
+Git fue desarrollado por Linus Torvalds en solo unas semanas.
+
+Google procesa miles de millones de búsquedas cada día.
+
+Más del 90 % de los servidores de Internet utilizan Linux.
+
+El primer ratón de ordenador estaba fabricado en madera.
+
+Python recibe su nombre del grupo de humor británico Monty Python.
+
+El primer ordenador electrónico de propósito general fue el ENIAC.
+
+La NASA utiliza Linux en muchos de sus sistemas críticos.
+
+La Estación Espacial Internacional funciona en gran parte con sistemas Linux.
+
+La contraseña más utilizada del mundo sigue siendo "123456".
+
+Cada día se crean cientos de miles de nuevas muestras de malware.
+
+El símbolo @ existía siglos antes del correo electrónico.
+
+El protocolo HTTP fue creado por Tim Berners-Lee.
+
+El navegador Mosaic popularizó el uso de Internet en los años 90.
+
+GitHub alberga cientos de millones de repositorios.
+
+El lenguaje C fue creado por Dennis Ritchie en 1972.
+
+Java fue diseñado con el lema "Write Once, Run Anywhere".
+
+Windows XP estuvo en funcionamiento en millones de equipos durante más de 20 años.
+
+El primer mensaje enviado por Internet fue "LO"; el sistema se bloqueó antes de completar la palabra "LOGIN".
+
+Google comenzó funcionando desde un garaje alquilado.
+
+Apple fue fundada en 1976 por Steve Jobs, Steve Wozniak y Ronald Wayne.
+
+El primer iPhone fue presentado en enero de 2007.
+
+La mayoría de los superordenadores del mundo utilizan Linux.
+
+Bitcoin nació en 2009 tras la publicación del libro blanco de Satoshi Nakamoto.
+
+Cada minuto se suben cientos de horas de vídeo a YouTube.
+
+El primer disco SSD comercial apareció muchos años antes de popularizarse.
+
+El correo electrónico es anterior a la World Wide Web.
+
+Cloudflare protege millones de sitios web frente a ataques DDoS.
+
+Los ataques de phishing siguen siendo la técnica de ciberataque más utilizada.
+
+El cifrado AES es uno de los estándares más utilizados para proteger información.
+
+El puerto 443 se utiliza para conexiones HTTPS seguras.
+
+Una copia de seguridad solo es útil si se comprueba periódicamente que puede restaurarse.
+
+El navegador Chrome está basado en el proyecto Chromium de código abierto.
+
+El kernel de Linux contiene decenas de millones de líneas de código.
+
+Docker revolucionó la forma de desplegar aplicaciones mediante contenedores.
+
+Proxmox VE está basado en Debian Linux.
+
+Ceph permite crear almacenamiento distribuido altamente disponible.
+
+La nube no es un lugar; son miles de servidores distribuidos por todo el mundo.

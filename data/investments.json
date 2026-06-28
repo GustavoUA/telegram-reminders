@@ -1,0 +1,86 @@
+[
+  {
+    "ticker": "BTC-USD",
+    "name": "Bitcoin",
+    "emoji": "₿",
+    "type": "Criptomoneda",
+    "description": "La criptomoneda más importante del mercado. Muy seguida por inversores institucionales."
+  },
+  {
+    "ticker": "GC=F",
+    "name": "Oro",
+    "emoji": "🥇",
+    "type": "Materia prima",
+    "description": "Activo refugio utilizado cuando aumenta la incertidumbre económica."
+  },
+  {
+    "ticker": "SI=F",
+    "name": "Plata",
+    "emoji": "🥈",
+    "type": "Materia prima",
+    "description": "Metal precioso con aplicaciones industriales y de inversión."
+  },
+  {
+    "ticker": "MSFT",
+    "name": "Microsoft",
+    "emoji": "💻",
+    "type": "Empresa",
+    "description": "Líder mundial en software, Azure e Inteligencia Artificial."
+  },
+  {
+    "ticker": "NVDA",
+    "name": "NVIDIA",
+    "emoji": "🤖",
+    "type": "Empresa",
+    "description": "Principal fabricante de GPUs para IA y centros de datos."
+  },
+  {
+    "ticker": "AAPL",
+    "name": "Apple",
+    "emoji": "🍎",
+    "type": "Empresa",
+    "description": "Una de las empresas tecnológicas más valiosas del mundo."
+  },
+  {
+    "ticker": "AMZN",
+    "name": "Amazon",
+    "emoji": "📦",
+    "type": "Empresa",
+    "description": "Líder mundial en comercio electrónico y servicios cloud."
+  },
+  {
+    "ticker": "GOOGL",
+    "name": "Alphabet",
+    "emoji": "🌐",
+    "type": "Empresa",
+    "description": "Matriz de Google y referente en IA y publicidad digital."
+  },
+  {
+    "ticker": "META",
+    "name": "Meta",
+    "emoji": "📱",
+    "type": "Empresa",
+    "description": "Propietaria de Facebook, Instagram y WhatsApp. Gran apuesta por la IA."
+  },
+  {
+    "ticker": "TSLA",
+    "name": "Tesla",
+    "emoji": "🚗",
+    "type": "Empresa",
+    "description": "Fabricante líder de vehículos eléctricos e innovación tecnológica."
+  },
+  {
+    "ticker": "SPY",
+    "name": "S&P 500 ETF",
+    "emoji": "📈",
+    "type": "ETF",
+    "description": "Replica el comportamiento de las 500 mayores empresas de Estados Unidos."
+  },
+  {
+    "ticker": "VWCE.DE",
+    "name": "Vanguard FTSE All-World",
+    "emoji": "🌍",
+    "type": "ETF",
+    "description": "ETF global muy utilizado para inversión a largo plazo."
+  }
+]
