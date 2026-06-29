@@ -4,3 +4,4 @@ beautifulsoup4
 lxml
 yfinance
 deep_translator
+python-telegram-bot==22.2
