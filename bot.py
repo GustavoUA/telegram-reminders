@@ -1,183 +1,187 @@
-import random
-import locale
-import requests
+import os
+import asyncio
 
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from dotenv import load_dotenv
 
-from config import (
-    TELEGRAM_TOKEN,
-    TELEGRAM_CHAT_ID,
-    USER_NAME,
-    HERMES_VERSION
-)
+from telegram import Bot
+from telegram.constants import ParseMode
 
-from modules.weather import get_weather
-from modules.cybersecurity import get_cyber_news
-from modules.security import get_security_tip
-from modules.ai import get_ai_news
-from modules.tech import get_tech_news
-from modules.investment import get_investment_tip
-from modules.curiosity import get_curiosity
-from modules.training import get_training
-from modules.motivation import get_motivation
-from modules.motogp import get_motogp_news
+from database import Database
+from modules.formatter import create_briefing
 
-# ==================================================
+
+# ============================================================
 # CONFIGURACIÓN
-# ==================================================
+# ============================================================
 
-TIMEZONE = ZoneInfo("Atlantic/Canary")
+load_dotenv()
 
-try:
-    locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
-except:
-    pass
+TOKEN = os.getenv("TELEGRAM_TOKEN")
 
+if not TOKEN:
+    raise ValueError(
+        "No se encontró TELEGRAM_TOKEN en el archivo .env"
+    )
 
-# ==================================================
-# SALUDOS
-# ==================================================
+bot = Bot(token=TOKEN)
 
-MORNING = [
-    f"☀️ Buenos días, {USER_NAME}.",
-    f"🌅 ¡Buenos días, {USER_NAME}!",
-    f"☕ Buenos días, {USER_NAME}. Aquí tienes tu briefing diario.",
-    f"🌞 Buenos días, {USER_NAME}. Espero que tengas un gran día."
-]
-
-AFTERNOON = [
-    f"🌤️ Buenas tardes, {USER_NAME}.",
-    f"☀️ Buenas tardes, {USER_NAME}.",
-    f"🌞 Espero que estés teniendo una buena tarde, {USER_NAME}.",
-    f"☕ Buenas tardes. Aquí tienes las novedades del día."
-]
-
-NIGHT = [
-    f"🌙 Buenas noches, {USER_NAME}.",
-    f"⭐ Buenas noches, {USER_NAME}.",
-    f"🌌 Espero que hayas tenido un gran día.",
-    f"🌙 Buenas noches. Aquí tienes el resumen del día."
-]
+db = Database()
 
 
-def get_greeting():
+# ============================================================
+# LOG
+# ============================================================
 
-    hour = datetime.now(TIMEZONE).hour
+def log(message):
 
-    if 6 <= hour < 12:
-        return random.choice(MORNING)
-
-    elif 12 <= hour < 20:
-        return random.choice(AFTERNOON)
-
-    else:
-        return random.choice(NIGHT)
+    print(f"[HERMES] {message}")
 
 
-# ==================================================
-# TELEGRAM
-# ==================================================
+# ============================================================
+# GENERAR MENSAJE
+# ============================================================
+def build_message(user):
 
-def send_telegram(text):
+    nombre = user.get("first_name", "Usuario")
 
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    chat_id = user["chat_id"]
 
-    requests.post(
-        url,
-        data={
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": text,
-            "disable_web_page_preview": True
-        },
-        timeout=30
-    ).raise_for_status()
+    ciudad = db.get_city(chat_id)
 
+    intereses = db.get_interests(chat_id)
 
-# ==================================================
-# MENSAJE
-# ==================================================
+    return create_briefing(
 
-def build_message():
+        nombre=nombre,
 
-    now = datetime.now(TIMEZONE)
+        ciudad=ciudad,
+
+        intereses=intereses
+
+    )
+
+# ============================================================
+# ENVIAR BRIEFING A UN USUARIO
+# ============================================================
+
+async def send_to_user(user):
 
     try:
-        fecha = now.strftime("%A, %d de %B de %Y").capitalize()
-    except:
-        fecha = now.strftime("%d/%m/%Y")
 
-    hora = now.strftime("%H:%M")
+        chat_id = user["chat_id"]
 
-    message = f"""
-╔══════════════════════════════╗
-            🤖 HERMES
-╚══════════════════════════════╝
+        mensaje = build_message(user)
 
-{get_greeting()}
+        await bot.send_message(
 
-📅 {fecha}
-🕒 {hora} (Canarias)
+            chat_id=chat_id,
 
-━━━━━━━━━━━━━━━━━━━━━━
-"""
+            text=mensaje,
 
-    sections = [
+            parse_mode=ParseMode.MARKDOWN,
 
-        get_weather(),
+            disable_web_page_preview=True
 
-        get_motogp_news(),
+        )
 
-        get_cyber_news(),
+        log(
 
-        get_security_tip(),
+            f"Briefing enviado a {user['first_name']} ({chat_id})"
 
-        get_ai_news(),
+        )
 
-        get_tech_news(),
+        db.update_last_seen(chat_id)
 
-        get_investment_tip(),
+        return True
 
-        get_curiosity(),
+    except Exception as e:
 
-        get_training(),
+        log(
 
-        get_motivation()
+            f"ERROR enviando a {user['chat_id']} -> {e}"
 
-    ]
+        )
 
-    message += "\n━━━━━━━━━━━━━━━━━━━━━━\n\n".join(sections)
-
-    message += f"""
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-🤖 {HERMES_VERSION}
-
-© 2026 Gustavo Ucar de Armas
-
-🚀 ¡Que tengas un gran día!
-"""
-
-    return message.strip()
+        return False
 
 
-# ==================================================
+# ============================================================
+# ENVIAR A TODOS LOS USUARIOS
+# ============================================================
+
+async def send_all():
+
+    usuarios = db.get_all_users()
+
+    if not usuarios:
+
+        log("No existen usuarios registrados.")
+
+        return
+
+    log(
+
+        f"Usuarios registrados: {len(usuarios)}"
+
+    )
+
+    enviados = 0
+
+    errores = 0
+
+    for usuario in usuarios:
+
+        ok = await send_to_user(usuario)
+
+        if ok:
+
+            enviados += 1
+
+        else:
+
+            errores += 1
+
+        await asyncio.sleep(1)
+
+    log("--------------------------------")
+
+    log(f"Enviados : {enviados}")
+
+    log(f"Errores  : {errores}")
+
+    log("--------------------------------")
+# ============================================================
 # MAIN
-# ==================================================
+# ============================================================
+
+async def main():
+
+    log("======================================")
+    log("HERMES - Briefing Diario")
+    log("======================================")
+
+    await send_all()
+
+    db.close()
+
+    log("Proceso finalizado correctamente.")
+
+
+# ============================================================
+# EJECUCIÓN
+# ============================================================
 
 if __name__ == "__main__":
 
     try:
 
-        mensaje = build_message()
+        asyncio.run(main())
 
-        send_telegram(mensaje)
+    except KeyboardInterrupt:
 
-        print("✅ Hermes ejecutado correctamente.")
+        log("Proceso cancelado por el usuario.")
 
     except Exception as e:
 
-        print("❌ Error:", e)
+        log(f"ERROR GENERAL -> {e}")
 
-        raise

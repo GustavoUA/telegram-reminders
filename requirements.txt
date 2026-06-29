@@ -5,3 +5,4 @@ lxml
 yfinance
 deep_translator
 python-telegram-bot==22.2
+python-dotenv

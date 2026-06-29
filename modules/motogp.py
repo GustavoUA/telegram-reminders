@@ -1,21 +1,46 @@
 import feedparser
-from bs4 import BeautifulSoup
-
-from config import MOTOGP_RSS
-from modules.translator import translate
 
 
-def clean_html(html):
+# ============================================================
+# RSS MOTOGP
+# ============================================================
 
-    return BeautifulSoup(
-        html,
-        "html.parser"
-    ).get_text(" ", strip=True)
+RSS_FEEDS = [
+
+    "https://es.motorsport.com/rss/motogp/news/",
+
+]
 
 
-def get_motogp_news():
+# ============================================================
+# CONFIGURACIÓN
+# ============================================================
 
-    for rss in MOTOGP_RSS:
+MAX_NEWS = 3
+
+TITLE = "🏍 *MOTOGP*"
+
+# ============================================================
+# LIMPIAR TÍTULOS
+# ============================================================
+
+def clean_title(title):
+
+    title = title.replace("\n", " ")
+
+    title = " ".join(title.split())
+
+    return title.strip()
+
+# ============================================================
+# OBTENER NOTICIAS
+# ============================================================
+
+def get_motogp():
+
+    noticias = []
+
+    for rss in RSS_FEEDS:
 
         try:
 
@@ -24,50 +49,44 @@ def get_motogp_news():
             if not feed.entries:
                 continue
 
-            noticia = feed.entries[0]
+            for entry in feed.entries[:MAX_NEWS]:
 
-            titulo = translate(noticia.title)
+                titulo = clean_title(entry.title)
 
-            enlace = noticia.link
+                noticias.append(f"• {titulo}")
 
-            resumen = ""
-
-            if hasattr(noticia, "summary"):
-
-                resumen = clean_html(
-                    noticia.summary
-                )
-
-                resumen = translate(resumen)
-
-                resumen = resumen[:300]
-
-            texto = f"""🏍️ MotoGP
-
-📰 {titulo}
-"""
-
-            if resumen:
-
-                texto += f"""
-
-📌 Resumen
-
-{resumen}
-"""
-
-            texto += f"""
-
-🔗 {enlace}
-"""
-
-            return texto
+            if noticias:
+                break
 
         except Exception:
-
             continue
 
-    return """🏍️ MotoGP
+    if not noticias:
+
+        return f"""
+━━━━━━━━━━━━━━━━━━━━━━
+
+{TITLE}
 
 No hay noticias disponibles.
+
+━━━━━━━━━━━━━━━━━━━━━━
 """
+
+    mensaje = f"""
+━━━━━━━━━━━━━━━━━━━━━━
+
+{TITLE}
+
+"""
+
+    mensaje += "\n\n".join(noticias)
+
+
+    mensaje += """
+
+━━━━━━━━━━━━━━━━━━━━━━
+"""
+
+    return mensaje
+

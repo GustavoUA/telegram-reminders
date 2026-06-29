@@ -1,12 +1,14 @@
 import os
+from dotenv import load_dotenv
 
-# ==========================================
-# TELEGRAM
-# ==========================================
+load_dotenv()
 
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
-TELEGRAM_CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
+if not TELEGRAM_TOKEN:
+    raise ValueError("No se encontró TELEGRAM_TOKEN en el archivo .env")
+
+USER_NAME = os.getenv("USER_NAME", "Usuario")
 # ==========================================
 # USUARIO
 # ==========================================
