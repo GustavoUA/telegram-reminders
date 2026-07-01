@@ -18,7 +18,6 @@ from telegram.ext import (
     filters
 )
 from handlers.commands import (
-    briefing_command,
     weather_command,
     news_command,
     cyber_command,
@@ -789,7 +788,7 @@ def main():
 
     app = Application.builder().token(TOKEN).build()
     app.post_init = set_commands
-    
+
     # -----------------------------
     # COMANDOS
     # -----------------------------
