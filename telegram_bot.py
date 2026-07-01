@@ -1,5 +1,5 @@
 import os
-
+from modules.settings import get_settings
 from dotenv import load_dotenv
 
 from telegram import (
@@ -137,7 +137,12 @@ def main_menu():
                 callback_data="menu_profile"
             )
         ],
-
+        [
+            InlineKeyboardButton(
+                "⚙️ Configuración",
+                callback_data="menu_settings"
+            )
+        ],
         [
             InlineKeyboardButton(
                 "ℹ️ Ayuda",
@@ -551,7 +556,19 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await show_interests(query)
         return
+    if data == "menu_settings":
 
+        texto = get_settings(chat_id)
+
+        await query.edit_message_text(
+        texto,
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("🔙 Volver", callback_data="back_main")]
+        ])
+    )
+
+        return
     if data == "menu_help":
 
         await show_help(query)
