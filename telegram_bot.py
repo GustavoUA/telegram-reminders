@@ -797,7 +797,7 @@ def main():
     )
     app.add_handler(CommandHandler("help", help_command))
 
-    app.add_handler(CommandHandler("ia", ai_command))
+    app.add_handler(CommandHandler("ai", ai_command))
     app.add_handler(CommandHandler("tech", tech_command))
     app.add_handler(CommandHandler("training", training_command))
     # -----------------------------
