@@ -255,81 +255,82 @@ class Database:
             return dict(row)
 
         return None
+
     # ============================================================
-# TIMEZONE
-# ============================================================
+    # TIMEZONE
+    # ============================================================
 
-def get_timezone(self, chat_id):
+    def get_timezone(self, chat_id):
 
-    row = self.cursor.execute(
-        """
-        SELECT timezone
-        FROM users
-        WHERE chat_id=?
-        """,
-        (chat_id,),
-    ).fetchone()
+        row = self.cursor.execute(
+           """
+           SELECT timezone
+           FROM users
+           WHERE chat_id=?
+           """,
+          (chat_id,),
+        ).fetchone()
 
-    if row:
-        return row["timezone"]
+        if row:
+           return row["timezone"]
 
-    return "Atlantic/Canary"
-
-
-def set_timezone(self, chat_id, timezone):
-
-    self.cursor.execute(
-        """
-        UPDATE users
-        SET timezone=?
-        WHERE chat_id=?
-        """,
-        (
-            timezone,
-            chat_id,
-        ),
-    )
-
-    self.commit()
+        return "Atlantic/Canary"
 
 
-# ============================================================
-# BRIEFING TIME
-# ============================================================
+    def set_timezone(self, chat_id, timezone):
 
-def get_briefing_time(self, chat_id):
+        self.cursor.execute(
+           """
+           UPDATE users
+           SET timezone=?
+           WHERE chat_id=?
+           """,
+           (
+               timezone,
+               chat_id,
+            ),
+        )
 
-    row = self.cursor.execute(
-        """
-        SELECT briefing_time
-        FROM users
-        WHERE chat_id=?
-        """,
-        (chat_id,),
-    ).fetchone()
-
-    if row:
-        return row["briefing_time"]
-
-    return "08:00"
+        self.commit()
 
 
-def set_briefing_time(self, chat_id, briefing_time):
+    # ============================================================
+    # BRIEFING TIME
+    # ============================================================
 
-    self.cursor.execute(
-        """
-        UPDATE users
-        SET briefing_time=?
-        WHERE chat_id=?
-        """,
-        (
-            briefing_time,
-            chat_id,
-        ),
-    )
+    def get_briefing_time(self, chat_id):
 
-    self.commit()
-    
+        row = self.cursor.execute(
+           """
+           SELECT briefing_time
+           FROM users
+           WHERE chat_id=?
+           """,
+           (chat_id,),
+        ).fetchone()
+
+        if row:
+           return row["briefing_time"]
+
+        return "08:00"
+
+
+    def set_briefing_time(self, chat_id, briefing_time):
+
+        self.cursor.execute(
+           """
+           UPDATE users
+           SET briefing_time=?
+           WHERE chat_id=?
+           """,
+           (
+              briefing_time,
+              chat_id,
+           ),
+       )
+
+        self.commit()
+
     # ============================================================
     # OBTENER TODOS LOS USUARIOS
     # ============================================================
@@ -346,6 +347,7 @@ def set_briefing_time(self, chat_id, briefing_time):
         ).fetchall()
 
         return [dict(row) for row in rows]
+    
     # ============================================================
     # ACTUALIZAR ÚLTIMA CONEXIÓN
     # ============================================================
