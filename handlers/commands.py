@@ -17,13 +17,17 @@ from modules.ai import get_ai
 from modules.tech import get_tech
 from modules.training import get_training
 from modules.investment import get_investment
+from modules.today import get_today
+from modules.settings import get_settings
+from modules.timezone import set_user_timezone
 
 db = Database()
+
 # ============================================================
-# /briefing
+# /today
 # ============================================================
 
-async def briefing_command(
+async def today_command(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE
 ):
@@ -44,7 +48,7 @@ async def briefing_command(
 
     intereses = db.get_interests(chat_id)
 
-    mensaje = create_briefing(
+    mensaje = get_today(
 
         nombre=user["first_name"],
 
@@ -331,4 +335,78 @@ async def investment_command(
 
         disable_web_page_preview=True
 
+    )
+# ============================================================
+# /settings
+# ============================================================
+
+async def settings_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    chat_id = update.effective_chat.id
+
+    texto = get_settings(chat_id)
+
+    if texto is None:
+
+        await update.message.reply_text(
+            "❌ No estás registrado. Usa /start primero."
+        )
+
+        return
+
+    await update.message.reply_text(
+        texto,
+        parse_mode=ParseMode.MARKDOWN
+    )
+# ============================================================
+# /timezone
+# ============================================================
+
+async def timezone_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    chat_id = update.effective_chat.id
+
+    if not context.args:
+
+        actual = db.get_timezone(chat_id)
+
+        await update.message.reply_text(
+            f"""🌍 Zona horaria actual
+
+{actual}
+
+Ejemplos:
+
+/timezone canarias
+/timezone madrid
+/timezone londres
+"""
+        )
+
+        return
+
+    ciudad = " ".join(context.args)
+
+    ok, respuesta = set_user_timezone(
+        chat_id,
+        ciudad
+    )
+
+    if not ok:
+
+        await update.message.reply_text(respuesta)
+
+        return
+
+    await update.message.reply_text(
+        f"""✅ Zona horaria actualizada.
+
+🌍 {respuesta}
+"""
     )

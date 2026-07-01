@@ -42,6 +42,8 @@ class Database:
 
             timezone TEXT DEFAULT 'Atlantic/Canary',
 
+            briefing_time TEXT DEFAULT '08:00',
+                            
             active INTEGER DEFAULT 1,
 
             created_at TEXT,
@@ -253,6 +255,81 @@ class Database:
             return dict(row)
 
         return None
+    # ============================================================
+# TIMEZONE
+# ============================================================
+
+def get_timezone(self, chat_id):
+
+    row = self.cursor.execute(
+        """
+        SELECT timezone
+        FROM users
+        WHERE chat_id=?
+        """,
+        (chat_id,),
+    ).fetchone()
+
+    if row:
+        return row["timezone"]
+
+    return "Atlantic/Canary"
+
+
+def set_timezone(self, chat_id, timezone):
+
+    self.cursor.execute(
+        """
+        UPDATE users
+        SET timezone=?
+        WHERE chat_id=?
+        """,
+        (
+            timezone,
+            chat_id,
+        ),
+    )
+
+    self.commit()
+
+
+# ============================================================
+# BRIEFING TIME
+# ============================================================
+
+def get_briefing_time(self, chat_id):
+
+    row = self.cursor.execute(
+        """
+        SELECT briefing_time
+        FROM users
+        WHERE chat_id=?
+        """,
+        (chat_id,),
+    ).fetchone()
+
+    if row:
+        return row["briefing_time"]
+
+    return "08:00"
+
+
+def set_briefing_time(self, chat_id, briefing_time):
+
+    self.cursor.execute(
+        """
+        UPDATE users
+        SET briefing_time=?
+        WHERE chat_id=?
+        """,
+        (
+            briefing_time,
+            chat_id,
+        ),
+    )
+
+    self.commit()
+    
     # ============================================================
     # OBTENER TODOS LOS USUARIOS
     # ============================================================

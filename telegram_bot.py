@@ -6,6 +6,7 @@ from telegram import (
     Update,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    BotCommand
 )
 
 from telegram.ext import (
@@ -29,7 +30,10 @@ from handlers.commands import (
     ai_command,
     tech_command,
     training_command,
-    investment_command
+    investment_command,
+    today_command,
+    settings_command,
+    timezone_command
 )
 from database import Database
 
@@ -78,6 +82,34 @@ user_sessions = {}
 
 # Usuarios que están escribiendo la ciudad
 waiting_city = {}
+
+# ============================================================
+# COMANDOS DEL MENÚ DE TELEGRAM
+# ============================================================
+
+async def set_commands(application):
+
+    await application.bot.set_my_commands([
+
+        BotCommand("start", "Iniciar Hermes"),
+        BotCommand("today", "Briefing del día"),
+        BotCommand("settings", "Configuración"),
+        BotCommand("timezone", "Zona horaria"),
+        BotCommand("weather", "Tiempo"),
+        BotCommand("news", "Noticias"),
+        BotCommand("investment", "Inversión"),
+        BotCommand("cyber", "Ciberseguridad"),
+        BotCommand("ai", "Inteligencia Artificial"),
+        BotCommand("tech", "Tecnología"),
+        BotCommand("f1", "Fórmula 1"),
+        BotCommand("motogp", "MotoGP"),
+        BotCommand("football", "Fútbol"),
+        BotCommand("worldcup", "Mundial 2026"),
+        BotCommand("training", "Entrenamiento"),
+        BotCommand("motivation", "Motivación"),
+        BotCommand("help", "Ayuda"),
+
+    ])
 # ============================================================
 # MENÚ PRINCIPAL
 # ============================================================
@@ -756,7 +788,8 @@ def main():
     print("=" * 60)
 
     app = Application.builder().token(TOKEN).build()
-
+    app.post_init = set_commands
+    
     # -----------------------------
     # COMANDOS
     # -----------------------------
@@ -769,7 +802,7 @@ def main():
     app.add_handler(
     CommandHandler("weather", weather_command)
     )
-
+    app.add_handler(CommandHandler("timezone", timezone_command))
     app.add_handler(
     CommandHandler("news", news_command)
     )
@@ -804,6 +837,9 @@ def main():
     app.add_handler(CommandHandler("training", training_command))
     app.add_handler(CommandHandler("motivation", quote_command))
     app.add_handler(CommandHandler("investment", investment_command))
+    app.add_handler(CommandHandler("today", today_command))
+    app.add_handler(CommandHandler("settings", settings_command))
+    
     # -----------------------------
     # BOTONES
     # -----------------------------
