@@ -28,7 +28,8 @@ from handlers.commands import (
     quote_command,
     ai_command,
     tech_command,
-    training_command
+    training_command,
+    motivation_command
 )
 from database import Database
 
@@ -800,6 +801,7 @@ def main():
     app.add_handler(CommandHandler("ai", ai_command))
     app.add_handler(CommandHandler("tech", tech_command))
     app.add_handler(CommandHandler("training", training_command))
+    app.add_handler(CommandHandler("motivation", quote_command))
     # -----------------------------
     # BOTONES
     # -----------------------------
