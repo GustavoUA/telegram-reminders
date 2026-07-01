@@ -20,7 +20,7 @@ def clean_html(html):
     return text
 
 
-def get_ai_news():
+def get_ai():
     """
     Obtiene la noticia más reciente de IA.
     Si una fuente falla, prueba la siguiente.

@@ -26,6 +26,9 @@ from handlers.commands import (
     football_command,
     worldcup_command,
     quote_command,
+    ai_command,
+    tech_command,
+    training_command
 )
 from database import Database
 
@@ -794,6 +797,9 @@ def main():
     )
     app.add_handler(CommandHandler("help", help_command))
 
+    app.add_handler(CommandHandler("ia", ai_command))
+    app.add_handler(CommandHandler("tech", tech_command))
+    app.add_handler(CommandHandler("training", training_command))
     # -----------------------------
     # BOTONES
     # -----------------------------

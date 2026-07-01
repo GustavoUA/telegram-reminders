@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from config import TECH_RSS
 
 
-def get_tech_news():
+def get_tech():
 
     for rss in TECH_RSS:
 

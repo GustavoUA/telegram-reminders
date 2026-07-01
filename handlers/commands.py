@@ -13,6 +13,9 @@ from modules.motogp import get_motogp
 from modules.football import get_football
 from modules.worldcup import get_worldcup
 from modules.quotes import get_quote
+from modules.ai import get_ai
+from modules.tech import get_tech
+from modules.training import get_training
 
 db = Database()
 # ============================================================
@@ -252,4 +255,61 @@ async def quote_command(
         parse_mode=ParseMode.MARKDOWN
 
     )
+# ============================================================
+# /ia
+# ============================================================
 
+async def ai_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    await update.message.reply_text(
+
+        get_ai(),
+
+        parse_mode=ParseMode.MARKDOWN,
+
+        disable_web_page_preview=True
+
+    )
+
+
+# ============================================================
+# /tech
+# ============================================================
+
+async def tech_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    await update.message.reply_text(
+
+        get_tech(),
+
+        parse_mode=ParseMode.MARKDOWN,
+
+        disable_web_page_preview=True
+
+    )
+
+
+# ============================================================
+# /training
+# ============================================================
+
+async def training_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    await update.message.reply_text(
+
+        get_training(),
+
+        parse_mode=ParseMode.MARKDOWN,
+
+        disable_web_page_preview=True
+
+    )
