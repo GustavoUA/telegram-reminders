@@ -700,3 +700,41 @@ class Database:
             ).fetchall()
 
         return [dict(row) for row in rows]
+    # ============================================================
+    # LANGUAGE
+    # ============================================================
+
+        def get_language(self, chat_id):
+
+            self.cursor.execute(
+            """
+             SELECT language
+             FROM users
+             WHERE chat_id=?
+             """,
+            (chat_id,)
+        )
+
+        row = self.cursor.fetchone()
+
+        if row and row["language"]:
+           return row["language"]
+
+        return "es"
+
+
+        def set_language(self, chat_id, language):
+
+            self.cursor.execute(
+            """
+            UPDATE users
+            SET language=?
+            WHERE chat_id=?
+            """,
+           (
+              language,
+              chat_id
+            )
+        )
+
+        self.commit()
