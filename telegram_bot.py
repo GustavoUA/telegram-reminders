@@ -795,7 +795,7 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(
-    CommandHandler("briefing", briefing_command)
+    CommandHandler("briefing", today_command)
     )
 
     app.add_handler(
