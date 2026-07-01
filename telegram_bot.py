@@ -673,6 +673,32 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
        )
 
         return
+    # ========================================================
+    # GUARDAR ZONA HORARIA
+    # ========================================================
+
+    if data.startswith("tz:"):
+
+        timezone = data.split(":", 1)[1]
+
+        db.set_timezone(chat_id, timezone)
+
+        texto = get_settings(chat_id)
+
+        await query.edit_message_text(
+
+            f"""✅ *Zona horaria actualizada.*
+
+{texto}
+""",
+
+            parse_mode="Markdown",
+
+            reply_markup=settings_keyboard()
+
+        )
+
+        return
     if data == "menu_help":
 
         await show_help(query)
