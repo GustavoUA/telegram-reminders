@@ -13,6 +13,9 @@ from telegram.ext import (
     CommandHandler,
     CallbackQueryHandler,
     ContextTypes,
+    MessageHandler,
+    ContextTypes,
+    filters
 )
 
 from database import Database
@@ -48,7 +51,7 @@ AVAILABLE_INTERESTS = [
     ("football", "⚽ Fútbol"),
     ("jobs", "💼 Empleo IT"),
     ("ai", "🤖 Inteligencia Artificial"),
-
+    ("worldcup", "🏆 Mundial 2026")
 ]
 
 
@@ -78,8 +81,8 @@ def main_menu():
 
         [
             InlineKeyboardButton(
-                "📍 Mi ciudad",
-                callback_data="menu_city"
+                "📍 Mis ciudades",
+                callback_data="menu_cities"
             )
         ],
 
@@ -162,7 +165,7 @@ def interests_keyboard(chat_id):
 
 
 # ============================================================
-# MENÚ CIUDAD
+# MENÚ CIUDADES
 # ============================================================
 
 def city_keyboard():
@@ -170,26 +173,31 @@ def city_keyboard():
     keyboard = [
 
         [
-
             InlineKeyboardButton(
-                "✏️ Cambiar ciudad",
-                callback_data="change_city"
+                "➕ Añadir ciudad",
+                callback_data="add_city"
             )
-
         ],
 
         [
+            InlineKeyboardButton(
+                "➖ Eliminar ciudad",
+                callback_data="remove_city"
+            )
+        ],
 
+        [
             InlineKeyboardButton(
                 "🔙 Volver",
                 callback_data="back_main"
             )
-
         ]
 
     ]
 
     return InlineKeyboardMarkup(keyboard)
+
+
 
 
 # ============================================================
@@ -350,7 +358,7 @@ async def show_profile(query):
     else:
         lista = "Sin configurar"
 
-    ciudad = user.get("city", "Sin configurar")
+    ciudad = db.get_cities(chat_id)
 
     mensaje = f"""
 👤 *MI PERFIL*
@@ -378,27 +386,30 @@ Intereses:
 
     )
 
-
 # ============================================================
-# PANTALLA CIUDAD
+# PANTALLA CIUDADES
 # ============================================================
 
-async def show_city(query):
+async def show_cities(query):
 
     chat_id = query.from_user.id
 
-    user = db.get_user(chat_id)
+    ciudades = db.get_cities(chat_id)
 
-    ciudad = user.get("city", "Sin configurar")
+    if ciudades:
+
+        lista = "\n".join(f"• {ciudad}" for ciudad in ciudades)
+
+    else:
+
+        lista = "No tienes ciudades configuradas."
 
     mensaje = f"""
-📍 *MI CIUDAD*
+📍 *MIS CIUDADES*
 
-Ciudad actual:
+{lista}
 
-{ciudad}
-
-Pulsa "Cambiar ciudad" para modificarla.
+Selecciona una opción.
 """
 
     await query.edit_message_text(
@@ -410,8 +421,6 @@ Pulsa "Cambiar ciudad" para modificarla.
         reply_markup=city_keyboard()
 
     )
-
-
 # ============================================================
 # PANTALLA INTERESES
 # ============================================================
@@ -448,7 +457,7 @@ async def show_help(query):
 
 Powered by Gustavo Ucar de Armas
 
-Versión 1.0
+Versión 1.4
 
 Próximamente:
 
@@ -488,9 +497,9 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_profile(query)
         return
 
-    if data == "menu_city":
+    if data == "menu_cities":
 
-        await show_city(query)
+        await show_cities(query)
         return
 
     if data == "menu_interests":
@@ -567,27 +576,28 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         return
 
-    # ========================================================
-    # CAMBIAR CIUDAD
-    # ========================================================
 
-    if data == "change_city":
+# ========================================================
+# AÑADIR CIUDAD
+# ========================================================
+
+    if data == "add_city":
 
         waiting_city[chat_id] = True
 
         await query.edit_message_text(
 
-            """
-📍 *Nueva ciudad*
+        """
+📍 *AÑADIR CIUDAD*
 
-Escribe ahora el nombre de la ciudad.
+Escribe el nombre de la ciudad.
 
-Ejemplo:
+Ejemplos:
 
-Madrid
-Barcelona
-Londres
-París
+• Madrid
+• Barcelona
+• San Cristóbal de La Laguna
+• Puerto de la Cruz
 """,
 
             parse_mode="Markdown"
@@ -595,11 +605,82 @@ París
         )
 
         return
-from telegram.ext import (
-    MessageHandler,
-    filters,
-)
+        if data == "remove_city":
 
+         ciudades = db.get_cities(chat_id)
+
+        if not ciudades:
+
+            await query.edit_message_text(
+
+                "❌ No tienes ciudades configuradas.",
+
+                reply_markup=city_keyboard()
+
+            )
+
+            return
+
+        keyboard = []
+
+        for ciudad in ciudades:
+
+            keyboard.append(
+
+                [
+
+                    InlineKeyboardButton(
+
+                        f"🗑 {ciudad}",
+
+                        callback_data=f"delete_city:{ciudad}"
+
+                    )
+
+                ]
+
+            )
+
+        keyboard.append(
+
+            [
+
+                InlineKeyboardButton(
+
+                    "🔙 Volver",
+
+                    callback_data="menu_cities"
+
+                )
+
+            ]
+
+        )
+
+        await query.edit_message_text(
+
+            "📍 *Selecciona la ciudad que deseas eliminar:*",
+
+            parse_mode="Markdown",
+
+            reply_markup=InlineKeyboardMarkup(keyboard)
+
+        )
+
+        return
+    # ========================================================
+    # BORRAR CIUDAD
+    # ========================================================
+
+    if data.startswith("delete_city:"):
+
+        ciudad = data.split(":", 1)[1]
+
+        db.remove_city(chat_id, ciudad)
+
+        await show_cities(query)
+
+        return
 # ============================================================
 # MENSAJES DE TEXTO
 # ============================================================
@@ -614,17 +695,22 @@ async def text_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         waiting_city.pop(chat_id, None)
 
-        # Guardar ciudad en SQLite
-        db.set_city(chat_id, city)
+        db.add_city(chat_id, city)
+
+        ciudades = db.get_cities(chat_id)
+
+        lista = "\n".join(f"• {c}" for c in ciudades)
 
         await update.message.reply_text(
 
-            f"""✅ Ciudad guardada correctamente.
+            f"""✅ *Ciudad añadida correctamente.*
 
-📍 Ciudad actual:
+📍 *Tus ciudades:*
 
-{city}
+{lista}
 """,
+
+            parse_mode="Markdown",
 
             reply_markup=main_menu()
 
@@ -639,7 +725,6 @@ async def text_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=main_menu()
 
     )
-
 
 # ============================================================
 # COMANDOS DESCONOCIDOS

@@ -46,7 +46,7 @@ def build_message(user):
 
     chat_id = user["chat_id"]
 
-    ciudad = db.get_city(chat_id)
+    ciudades = db.get_cities(chat_id)
 
     intereses = db.get_interests(chat_id)
 
@@ -54,7 +54,7 @@ def build_message(user):
 
         nombre=nombre,
 
-        ciudad=ciudad,
+        ciudades=ciudades,
 
         intereses=intereses
 

@@ -46,9 +46,7 @@ class Database:
 
             created_at TEXT,
 
-            last_seen TEXT,
-               
-            city TEXT DEFAULT ''
+            last_seen TEXT
 
         )
         """)
@@ -132,7 +130,19 @@ class Database:
 
         )
         """)
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS cities(
 
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            chat_id INTEGER NOT NULL,
+
+            city TEXT NOT NULL,
+
+            UNIQUE(chat_id, city)
+
+        )
+        """)
         self.conn.commit()
 
     # ============================================================
@@ -243,43 +253,9 @@ class Database:
             return dict(row)
 
         return None
-
     # ============================================================
-    # CITY
+    # OBTENER TODOS LOS USUARIOS
     # ============================================================
-
-    def set_city(self, chat_id, city):
-
-        self.cursor.execute(
-            """
-            UPDATE users
-            SET city=?
-            WHERE chat_id=?
-            """,
-            (
-                city,
-                chat_id,
-            ),
-        )
-
-        self.commit()
-
-
-    def get_city(self, chat_id):
-
-        row = self.cursor.execute(
-            """
-            SELECT city
-            FROM users
-            WHERE chat_id=?
-            """,
-            (chat_id,),
-        ).fetchone()
-
-        if row:
-            return row["city"]
-
-        return ""
 
     def get_all_users(self):
 
@@ -287,12 +263,15 @@ class Database:
             """
             SELECT *
             FROM users
-            WHERE active=1
+            WHERE active = 1
             ORDER BY first_name
             """
         ).fetchall()
 
-        return [dict(r) for r in rows]
+        return [dict(row) for row in rows]
+    # ============================================================
+    # ACTUALIZAR ÚLTIMA CONEXIÓN
+    # ============================================================
 
     def update_last_seen(self, chat_id):
 
@@ -309,55 +288,58 @@ class Database:
         )
 
         self.commit()
+    # ============================================================
+    # CITIES
+    # ============================================================
 
-    def enable_user(self, chat_id):
+    def add_city(self, chat_id, city):
 
         self.cursor.execute(
             """
-            UPDATE users
-            SET active=1
-            WHERE chat_id=?
+            INSERT OR IGNORE INTO cities
+            (
+                chat_id,
+                city
+            )
+            VALUES (?,?)
             """,
-            (chat_id,),
+            (
+                chat_id,
+                city,
+            ),
         )
 
         self.commit()
 
-    def disable_user(self, chat_id):
+    def remove_city(self, chat_id, city):
 
         self.cursor.execute(
             """
-            UPDATE users
-            SET active=0
+            DELETE FROM cities
             WHERE chat_id=?
+            AND city=?
             """,
-            (chat_id,),
+            (
+                chat_id,
+                city,
+            ),
         )
 
         self.commit()
 
-    def total_users(self):
+    def get_cities(self, chat_id):
 
-        row = self.cursor.execute(
+        rows = self.cursor.execute(
             """
-            SELECT COUNT(*)
-            FROM users
-            """
-        ).fetchone()
+            SELECT city
+            FROM cities
+            WHERE chat_id=?
+            ORDER BY city
+            """,
+            (chat_id,),
+        ).fetchall()
 
-        return row[0]
-
-    def active_users(self):
-
-        row = self.cursor.execute(
-            """
-            SELECT COUNT(*)
-            FROM users
-            WHERE active=1
-            """
-        ).fetchone()
-
-        return row[0]
+        return [row["city"] for row in rows]
     # ============================================================
     # INTERESTS
     # ============================================================

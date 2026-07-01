@@ -7,7 +7,7 @@ from modules.motogp import get_motogp
 from modules.formula1 import get_formula1
 from modules.football import get_football
 from modules.quotes import get_quote
-
+from modules.worldcup import get_worldcup
 
 # ============================================================
 # SALUDO
@@ -76,11 +76,15 @@ def create_briefing(
 
     nombre="Usuario",
 
-    ciudad="",
+    ciudades=None,
 
     intereses=None
 
 ):
+
+    if ciudades is None:
+
+        ciudades = []
 
     if intereses is None:
 
@@ -94,13 +98,6 @@ def create_briefing(
 {greeting()} *{nombre}*
 
 📅 {today()}
-"""
-
-    if ciudad:
-
-        mensaje += f"\n📍 {ciudad}"
-
-    mensaje += """
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -111,11 +108,16 @@ def create_briefing(
 
     if "weather" in intereses:
 
-        mensaje += get_weather(ciudad)
+        if ciudades:
 
-    
+            for ciudad in ciudades:
 
+                mensaje += get_weather(ciudad)
 
+        else:
+
+            mensaje += get_weather()
+        
     # ============================================================
     # NOTICIAS GENERALES
     # ============================================================
@@ -123,9 +125,6 @@ def create_briefing(
     if "news" in intereses:
 
         mensaje += get_news()
-
-        
-
 
     # ============================================================
     # CIBERSEGURIDAD
@@ -135,9 +134,6 @@ def create_briefing(
 
         mensaje += get_cyber()
 
-       
-
-
     # ============================================================
     # MOTOGP
     # ============================================================
@@ -145,9 +141,6 @@ def create_briefing(
     if "motogp" in intereses:
 
         mensaje += get_motogp()
-
-        
-
 
     # ============================================================
     # FÓRMULA 1
@@ -157,9 +150,6 @@ def create_briefing(
 
         mensaje += get_formula1()
 
-        
-
-
     # ============================================================
     # FÚTBOL
     # ============================================================
@@ -167,17 +157,22 @@ def create_briefing(
     if "football" in intereses:
 
         mensaje += get_football()
+    
+    # ============================================================
+    # MUNDIAL
+    # ============================================================
 
-        
+    if "worldcup" in intereses:
+
+       mensaje += get_worldcup()
+
     # ============================================================
     # FRASE MOTIVADORA
     # ============================================================
 
     mensaje += get_quote()
 
-    
-
-    # ============================================================
+       # ============================================================
     # DESPEDIDA
     # ============================================================
 
@@ -195,9 +190,9 @@ def create_briefing(
 
         despedida = "🌙 Que tengas una excelente noche."
 
-    mensaje += despedida
+    mensaje += f"""
 
-    mensaje += """
+{despedida}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -225,15 +220,28 @@ if __name__ == "__main__":
 
             nombre="Gustavo",
 
-            ciudad="Puerto de la Cruz",
+            ciudades=[
+
+                "Puerto de la Cruz",
+
+                "San Cristóbal de La Laguna"
+
+            ],
 
             intereses=[
+
                 "weather",
+
                 "news",
+
                 "cyber",
+
                 "motogp",
+
                 "formula1",
-                "football",
+
+                "football"
+
             ]
 
         )
