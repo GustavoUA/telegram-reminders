@@ -29,7 +29,6 @@ from handlers.commands import (
     ai_command,
     tech_command,
     training_command,
-    motivation_command
 )
 from database import Database
 
