@@ -704,15 +704,15 @@ class Database:
     # LANGUAGE
     # ============================================================
 
-        def get_language(self, chat_id):
+    def get_language(self, chat_id):
 
-            self.cursor.execute(
-            """
-             SELECT language
-             FROM users
-             WHERE chat_id=?
-             """,
-            (chat_id,)
+        self.cursor.execute(
+        """
+        SELECT language
+        FROM users
+        WHERE chat_id=?
+        """,
+        (chat_id,)
         )
 
         row = self.cursor.fetchone()
@@ -723,18 +723,18 @@ class Database:
         return "es"
 
 
-        def set_language(self, chat_id, language):
+    def set_language(self, chat_id, language):
 
-            self.cursor.execute(
-            """
-            UPDATE users
-            SET language=?
-            WHERE chat_id=?
-            """,
-           (
-              language,
-              chat_id
-            )
+        self.cursor.execute(
+        """
+        UPDATE users
+        SET language=?
+        WHERE chat_id=?
+        """,
+        (
+            language,
+            chat_id
+        )
         )
 
         self.commit()
