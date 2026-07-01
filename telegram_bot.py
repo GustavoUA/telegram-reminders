@@ -14,10 +14,19 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes,
     MessageHandler,
-    ContextTypes,
     filters
 )
-
+from handlers.commands import (
+    briefing_command,
+    weather_command,
+    news_command,
+    cyber_command,
+    motogp_command,
+    f1_command,
+    football_command,
+    worldcup_command,
+    quote_command,
+)
 from database import Database
 
 
@@ -577,17 +586,16 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-# ========================================================
-# AÑADIR CIUDAD
-# ========================================================
+    # ========================================================
+    # AÑADIR CIUDAD
+    # ========================================================
 
     if data == "add_city":
 
         waiting_city[chat_id] = True
 
         await query.edit_message_text(
-
-        """
+            """
 📍 *AÑADIR CIUDAD*
 
 Escribe el nombre de la ciudad.
@@ -599,24 +607,25 @@ Ejemplos:
 • San Cristóbal de La Laguna
 • Puerto de la Cruz
 """,
-
             parse_mode="Markdown"
-
         )
 
         return
-        if data == "remove_city":
 
-         ciudades = db.get_cities(chat_id)
+    # ========================================================
+    # ELIMINAR CIUDAD
+    # ========================================================
+
+    if data == "remove_city":
+
+        ciudades = db.get_cities(chat_id)
 
         if not ciudades:
 
             await query.edit_message_text(
-
                 "❌ No tienes ciudades configuradas.",
-
+                parse_mode="Markdown",
                 reply_markup=city_keyboard()
-
             )
 
             return
@@ -625,49 +634,28 @@ Ejemplos:
 
         for ciudad in ciudades:
 
-            keyboard.append(
-
-                [
-
-                    InlineKeyboardButton(
-
-                        f"🗑 {ciudad}",
-
-                        callback_data=f"delete_city:{ciudad}"
-
-                    )
-
-                ]
-
-            )
-
-        keyboard.append(
-
-            [
-
+            keyboard.append([
                 InlineKeyboardButton(
-
-                    "🔙 Volver",
-
-                    callback_data="menu_cities"
-
+                    f"🗑 {ciudad}",
+                    callback_data=f"delete_city:{ciudad}"
                 )
+            ])
 
-            ]
-
-        )
+        keyboard.append([
+            InlineKeyboardButton(
+                "🔙 Volver",
+                callback_data="menu_cities"
+            )
+        ])
 
         await query.edit_message_text(
-
             "📍 *Selecciona la ciudad que deseas eliminar:*",
-
             parse_mode="Markdown",
-
             reply_markup=InlineKeyboardMarkup(keyboard)
-
         )
 
         return
+
     # ========================================================
     # BORRAR CIUDAD
     # ========================================================
@@ -769,6 +757,41 @@ def main():
     # -----------------------------
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(
+    CommandHandler("briefing", briefing_command)
+    )
+
+    app.add_handler(
+    CommandHandler("weather", weather_command)
+    )
+
+    app.add_handler(
+    CommandHandler("news", news_command)
+    )
+
+    app.add_handler(
+    CommandHandler("cyber", cyber_command)
+    )
+
+    app.add_handler(
+    CommandHandler("motogp", motogp_command)
+    )
+
+    app.add_handler(
+    CommandHandler("f1", f1_command)
+    )
+
+    app.add_handler(
+    CommandHandler("football", football_command)
+    )
+
+    app.add_handler(
+    CommandHandler("worldcup", worldcup_command)
+    )
+
+    app.add_handler(
+    CommandHandler("quote", quote_command)
+    )
     app.add_handler(CommandHandler("help", help_command))
 
     # -----------------------------
