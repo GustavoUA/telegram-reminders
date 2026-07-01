@@ -29,6 +29,7 @@ from handlers.commands import (
     ai_command,
     tech_command,
     training_command,
+    investment_command
 )
 from database import Database
 
@@ -63,7 +64,8 @@ AVAILABLE_INTERESTS = [
     ("football", "⚽ Fútbol"),
     ("jobs", "💼 Empleo IT"),
     ("ai", "🤖 Inteligencia Artificial"),
-    ("worldcup", "🏆 Mundial 2026")
+    ("worldcup", "🏆 Mundial 2026"),
+    ("investment", "📈 Inversión")
 ]
 
 
@@ -801,6 +803,7 @@ def main():
     app.add_handler(CommandHandler("tech", tech_command))
     app.add_handler(CommandHandler("training", training_command))
     app.add_handler(CommandHandler("motivation", quote_command))
+    app.add_handler(CommandHandler("investment", investment_command))
     # -----------------------------
     # BOTONES
     # -----------------------------

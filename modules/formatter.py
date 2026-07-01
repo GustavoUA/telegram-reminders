@@ -8,6 +8,7 @@ from modules.formula1 import get_formula1
 from modules.football import get_football
 from modules.quotes import get_quote
 from modules.worldcup import get_worldcup
+from modules.investment import get_investment
 
 # ============================================================
 # SALUDO
@@ -125,7 +126,13 @@ def create_briefing(
     if "news" in intereses:
 
         mensaje += get_news()
+    # ============================================================
+    # INVERSIÓN
+    # ============================================================
 
+    if "investment" in intereses:
+
+        mensaje += get_investment()
     # ============================================================
     # CIBERSEGURIDAD
     # ============================================================
@@ -241,6 +248,8 @@ if __name__ == "__main__":
                 "formula1",
 
                 "football"
+                
+                "Investment"
 
             ]
 

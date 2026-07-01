@@ -16,6 +16,7 @@ from modules.quotes import get_quote
 from modules.ai import get_ai
 from modules.tech import get_tech
 from modules.training import get_training
+from modules.investment import get_investment
 
 db = Database()
 # ============================================================
@@ -307,6 +308,24 @@ async def training_command(
     await update.message.reply_text(
 
         get_training(),
+
+        parse_mode=ParseMode.MARKDOWN,
+
+        disable_web_page_preview=True
+
+    )
+# ============================================================
+# /investment
+# ============================================================
+
+async def investment_command(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE
+):
+
+    await update.message.reply_text(
+
+        get_investment(),
 
         parse_mode=ParseMode.MARKDOWN,
 
