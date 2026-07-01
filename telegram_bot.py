@@ -316,7 +316,7 @@ def settings_keyboard():
 
         [
             InlineKeyboardButton(
-                "🌐 Idioma (Próximamente)",
+                "🌐 Idioma",
                 callback_data="settings_language"
             )
         ],
@@ -391,7 +391,7 @@ Selecciona una opción del menú.
 # ============================================================
 # AYUDA
 # ============================================================
-
+   
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
@@ -447,7 +447,12 @@ async def show_profile(query):
     else:
         lista = "Sin configurar"
 
-    ciudad = db.get_cities(chat_id)
+    ciudades = db.get_cities(chat_id)
+
+    if ciudades:
+        ciudad = "\n".join(f"• {c}" for c in ciudades)
+    else:
+        ciudad = "Sin configurar"
 
     mensaje = f"""
 👤 *MI PERFIL*
@@ -611,66 +616,48 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         return
     # ========================================================
-# ZONA HORARIA
-# ========================================================
+    # ZONA HORARIA
+    # ========================================================
 
     if data == "settings_timezone":
 
-        keyboard = [
+        actual = db.get_timezone(chat_id)
 
-           [
-            InlineKeyboardButton(
-                "🇮🇨 Canarias",
-                callback_data="tz:Atlantic/Canary"
-            )
-           ],
+        zonas = [
 
-           [
-            InlineKeyboardButton(
-                "🇪🇸 Madrid",
-                callback_data="tz:Europe/Madrid"
-            )
-           ],
+            ("Atlantic/Canary", "🇮🇨 Canarias"),
+            ("Europe/Madrid", "🇪🇸 Madrid"),
+            ("Europe/London", "🇬🇧 Londres"),
+            ("America/New_York", "🇺🇸 Nueva York"),
+            ("Asia/Tokyo", "🇯🇵 Tokio")
 
-            [
-            InlineKeyboardButton(
-                "🇬🇧 Londres",
-                callback_data="tz:Europe/London"
-            )
-           ],
+        ]
 
-           [
-            InlineKeyboardButton(
-                "🇺🇸 Nueva York",
-                callback_data="tz:America/New_York"
-            )
-           ],
+        keyboard = []
 
-           [
-            InlineKeyboardButton(
-                "🇯🇵 Tokio",
-                callback_data="tz:Asia/Tokyo"
-            )
-           ],
+        for codigo, nombre in zonas:
 
-           [
+            icono = "✅" if codigo == actual else "⬜"
+
+            keyboard.append([
+                InlineKeyboardButton(
+                    f"{icono} {nombre}",
+                    callback_data=f"tz:{codigo}"
+                )
+            ])
+
+        keyboard.append([
             InlineKeyboardButton(
                 "🔙 Volver",
                 callback_data="menu_settings"
             )
-            ]
-
-       ]
+        ])
 
         await query.edit_message_text(
-
-           "🌍 *Selecciona tu zona horaria:*",
-
-           parse_mode="Markdown",
-
-           reply_markup=InlineKeyboardMarkup(keyboard)
-
-       )
+            "🌍 *Selecciona tu zona horaria:*",
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
 
         return
     # ========================================================
@@ -699,11 +686,98 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         return
+    
+    # ========================================================
+    # IDIOMA
+    # ========================================================
+
+    if data == "settings_language":
+
+        actual = db.get_language(chat_id)
+
+        idiomas = [
+
+            ("es", "🇪🇸 Español"),
+            ("en", "🇬🇧 English"),
+            ("fr", "🇫🇷 Français"),
+            ("it", "🇮🇹 Italiano"),
+
+        ]
+
+        keyboard = []
+
+        for codigo, nombre in idiomas:
+
+            icono = "✅" if codigo == actual else "⬜"
+
+            keyboard.append(
+
+                [
+                    InlineKeyboardButton(
+                        f"{icono} {nombre}",
+                        callback_data=f"lang:{codigo}"
+                    )
+                ]
+
+            )
+
+        keyboard.append(
+
+            [
+                InlineKeyboardButton(
+                    "🔙 Volver",
+                    callback_data="menu_settings"
+                )
+            ]
+
+        )
+
+        await query.edit_message_text(
+
+            "🌐 *Selecciona el idioma de Hermes:*",
+
+            parse_mode="Markdown",
+
+            reply_markup=InlineKeyboardMarkup(keyboard)
+
+        )
+
+        return
+    # ========================================================
+    # GUARDAR IDIOMA
+    # ========================================================
+
+    if data.startswith("lang:"):
+
+        language = data.split(":")[1]
+
+        db.set_language(chat_id, language)
+
+        texto = get_settings(chat_id)
+
+        await query.edit_message_text(
+
+            f"""✅ *Idioma actualizado.*
+
+{texto}
+""",
+
+            parse_mode="Markdown",
+
+            reply_markup=settings_keyboard()
+
+        )
+
+        return
+    # ========================================================
+    # AYUDA
+    # ========================================================
+
     if data == "menu_help":
 
         await show_help(query)
-        return
 
+        return
     # ========================================================
     # VOLVER
     # ========================================================
