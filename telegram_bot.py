@@ -293,6 +293,45 @@ def help_keyboard():
 
     return InlineKeyboardMarkup(keyboard)
 # ============================================================
+# MENÚ CONFIGURACIÓN
+# ============================================================
+
+def settings_keyboard():
+
+    keyboard = [
+
+        [
+            InlineKeyboardButton(
+                "🌍 Zona horaria",
+                callback_data="settings_timezone"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "⏰ Hora del briefing",
+                callback_data="settings_briefing"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "🌐 Idioma (Próximamente)",
+                callback_data="settings_language"
+            )
+        ],
+
+        [
+            InlineKeyboardButton(
+                "🔙 Volver",
+                callback_data="back_main"
+            )
+        ]
+
+    ]
+
+    return InlineKeyboardMarkup(keyboard)
+# ============================================================
 # START
 # ============================================================
 
@@ -561,12 +600,77 @@ async def callbacks(update: Update, context: ContextTypes.DEFAULT_TYPE):
         texto = get_settings(chat_id)
 
         await query.edit_message_text(
-        texto,
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("🔙 Volver", callback_data="back_main")]
-        ])
-    )
+
+         texto,
+
+         parse_mode="Markdown",
+
+         reply_markup=settings_keyboard()
+
+       )
+
+        return
+    # ========================================================
+# ZONA HORARIA
+# ========================================================
+
+    if data == "settings_timezone":
+
+        keyboard = [
+
+           [
+            InlineKeyboardButton(
+                "🇮🇨 Canarias",
+                callback_data="tz:Atlantic/Canary"
+            )
+           ],
+
+           [
+            InlineKeyboardButton(
+                "🇪🇸 Madrid",
+                callback_data="tz:Europe/Madrid"
+            )
+           ],
+
+            [
+            InlineKeyboardButton(
+                "🇬🇧 Londres",
+                callback_data="tz:Europe/London"
+            )
+           ],
+
+           [
+            InlineKeyboardButton(
+                "🇺🇸 Nueva York",
+                callback_data="tz:America/New_York"
+            )
+           ],
+
+           [
+            InlineKeyboardButton(
+                "🇯🇵 Tokio",
+                callback_data="tz:Asia/Tokyo"
+            )
+           ],
+
+           [
+            InlineKeyboardButton(
+                "🔙 Volver",
+                callback_data="menu_settings"
+            )
+            ]
+
+       ]
+
+        await query.edit_message_text(
+
+           "🌍 *Selecciona tu zona horaria:*",
+
+           parse_mode="Markdown",
+
+           reply_markup=InlineKeyboardMarkup(keyboard)
+
+       )
 
         return
     if data == "menu_help":
